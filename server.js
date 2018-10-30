@@ -3,7 +3,7 @@
 const express = require('express');
 const cors = require('cors');
 const superagent = require('superagent');
-const pg = require('pg');
+// const pg = require('pg');
 const ejs = require('ejs');
 
 require('dotenv').config();
@@ -11,9 +11,9 @@ require('dotenv').config();
 const PORT = process.env.PORT || 3000;
 const app = express();
 
-const client = new pg.Client(process.env.DATABASE_URL);
-client.connect();
-client.on('err', err=> console.log(err));
+// const client = new pg.Client(process.env.DATABASE_URL);
+// client.connect();
+// client.on('err', err=> console.log(err));
 
 app.use(cors());
 
