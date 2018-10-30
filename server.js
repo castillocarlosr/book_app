@@ -5,6 +5,7 @@ const cors = require('cors');
 const superagent = require('superagent');
 //const pg = require('pg');
 const ejs = require('ejs');
+const bodyParser = require('body-parser');
 
 require('dotenv').config();
 
@@ -19,10 +20,20 @@ app.use(cors());
 
 app.set('view engine', 'ejs');
 
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
+app.use(bodyParser.json());
+
+
+
 //this is rendering the entire index page
 app.get('/', (reg, res) => {
   res.render('pages/index');
 });
+
+
 
 app.post('/search', getSearchResults);
 
@@ -53,8 +64,8 @@ function getSearchResults (req, res) {
 
 // This retrieves and returns data from the Google Books API. 
 function fetchBooks (req, res) {
-  console.log(req);
-  const _books_URL = `https://www.googleapis.com/books/v1/volumes?q=${req.query.data}`;
+  console.log(req.body);
+  const _books_URL = `https://www.googleapis.com/books/v1/volumes?q=${req.body.search[0]}`;
   return superagent.get(_books_URL)
     .then(results => {
       //console.log(results);
