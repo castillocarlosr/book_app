@@ -11,14 +11,6 @@
     <!-- <script src="main.js"></script> -->
 </head>
 <body>
-    <% books.forEach(book => { %>
-        <div class="bookcard">
-            <h4><%= book.title %></h4>
-            <h5><%= book.authors.join(', ') %></h5>
-            <h6><%= book.isbn %></h6>
-            <img class="bookimage" src="<%= book.img_url %>">
-            <p><%= book.description %></p>
-        </div>
-        <% }); %>
+    
 </body>
 </html>
