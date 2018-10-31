@@ -1,3 +1,41 @@
+body, main {
+    text-align: center;
+    width: 100%;
+}
+
 body{
     background-color:#76d04b;
+    height: 100%;
+    position: relative;
+    width: 100%;
+}
+
+header, footer {
+    background-color: rgb(49, 49, 49);
+    color: rgb(230, 228, 228);
+    height: 80px;
+    width: 100%;
+}
+
+main {
+    background-color: lightgrey;
+    height: 600px;
+    margin: 0 auto 0 auto;
+    text-align: center;
+    width: 480px;
+}
+
+.bookCard {
+    background-color: rgb(49, 49, 49);
+    color: rgb(230, 228, 228);
+    margin: 1em auto 0 auto;
+    width: 100%;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+}
+footer h2 {
+    margin: 0 auto 0 auto;
 }
