@@ -1,0 +1,33 @@
+<% books.forEach(book => { %>
+    <div class="bookCard">
+        <h4><%= book.title; %></h4>
+        <h5><%= book.authors.join(', '); %></h5>
+        <h6><%= book.isbn; %></h6>
+        <img class="bookimage" src="<%= book.img_url; %>">
+        <p><%= book.description; %></p>
+        <form class="saveForm" action="/saveToShelf" method="post">
+            <fieldset>
+                <label>Title:<input type="text" name="title" default="<%= book.title %>"></label>
+                <label>Authors:<input type="text" name="authors" default="<%= book.authors.join %>"></label>
+                <label>ISBN:<input type="text" name="isbn" default="<%= book.isbn %>"></label>
+                <label>Thumbnail URL:<input type="text" name="img_url" default="<%= book.img_url %>"></label>
+                <label>Description:<input type="text" name="description" default="<%= book.description %>"></label>
+                <label>Bookshelf notes:<input type="text" name="bookShelf" default=""></label>
+                <input type="submit" value="Save to My Books">
+            </fieldset>
+        </form>
+        <form class="detailView" action="/detailView" method="get">
+            <fieldset>
+                <div class="hidden">
+                    <label>Title:<input type="text" name="title" default="<%= book.title %>"></label>
+                    <label>Authors:<input type="text" name="authors" default="<%= book.authors.join %>"></label>
+                    <label>ISBN:<input type="text" name="isbn" default="<%= book.isbn %>"></label>
+                    <label>Thumbnail URL:<input type="text" name="img_url" default="<%= book.img_url %>"></label>
+                    <label>Description:<input type="text" name="description" default="<%= book.description %>"></label>
+                    <label>Bookshelf notes:<input type="text" name="bookShelf" default=""></label>
+                </div>
+                <input typ="submit" value="Detail View">
+            </fieldset>
+        </form>
+    </div>
+<% }); %>
