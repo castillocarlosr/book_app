@@ -32,7 +32,7 @@ app.use(express.static('public'));
 //this is rendering the entire index page
 
 app.get('/', (reg, res) => {
-  res.render('pages/index');
+  res.render('pages/index',{books: fetchBooksFromDB(req, res)});
 });
 
 app.post('/search', getSearchResults);

@@ -5,7 +5,6 @@ body, main {
 
 body{
     background-color:#76d04b;
-    height: 100%;
     position: relative;
     width: 100%;
 }
@@ -19,7 +18,7 @@ header, footer {
 
 main {
     background-color: lightgrey;
-    height: 600px;
+    height: 800px;
     margin: 0 auto 0 auto;
     text-align: center;
     width: 480px;
@@ -39,4 +38,8 @@ footer {
 }
 footer h2 {
     margin: 0 auto 0 auto;
+}
+
+.hidden {
+    display: none;
 }

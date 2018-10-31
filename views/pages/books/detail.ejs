@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+    <% let rootPath = '../../../'; %>
+    <%- include(rootPath + 'views/layout/head'); %>
+    <body>
+        <%- include(rootPath + 'views/layout/header'); %>
+        <main>
+            <%- include(rootPath + 'views/layout/bookCard', {books:books}); %>
+        </main>
+        <%- include(rootPath + 'views/layout/footer'); %>
+    </body>
+</html>
