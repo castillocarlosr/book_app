@@ -20,22 +20,22 @@ app.use(cors());
 
 app.set('view engine', 'ejs');
 
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+app.use(express.urlencoded({extended:true}));
+app.use(express.static('public'));
 
-app.use(bodyParser.json());
 
+// app.use(bodyParser.urlencoded({
+//   extended: true
+// }));
 
 
 //this is rendering the entire index page
+app.post('/search', getSearchResults);
+
 app.get('/', (reg, res) => {
   res.render('pages/index');
 });
 
-
-
-app.post('/search', getSearchResults);
 
 function getSearchResults (req, res) {
   // const sampleBooks = [{
