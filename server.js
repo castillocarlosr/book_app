@@ -75,6 +75,9 @@ function fetchBooks (req, res) {
       }
     })
     .catch(err => handleError(err, res));
+
+   // .catch(err => handleError({errorMsg: err}, res));
+
 }
 
 function BookResult (result) {
@@ -86,8 +89,14 @@ function BookResult (result) {
 }
 
 function handleError(err, res) {
-  console.log(err);
-  res.redirect('/error');
+
+  //console.log(err);
+  //res.redirect('/error');
+
+  console.log('Oh oh error', err);
+  const encodedError = JSON.stringify(err);
+  // res.render('pages/error')
+  res.redirect(`/err?e=${encodedError}`);
 }
 
 app.listen(PORT, ()=> console.log(`App is up on port ${PORT}`));
