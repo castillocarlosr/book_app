@@ -86,6 +86,7 @@ function BookResult (result) {
   this.isbn = result.volumeInfo.industryIdentifiers || [];
   this.img_url = result.volumeInfo.imageLinks.thumbnail || '';
   this.description = result.volumeInfo.description || '';
+
 }
 
 function handleError(err, res) {
