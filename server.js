@@ -23,11 +23,9 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({extended:true}));
 app.use(express.static('public'));
 
-
 // app.use(bodyParser.urlencoded({
 //   extended: true
 // }));
-
 
 //this is rendering the entire index page
 app.post('/search', getSearchResults);
@@ -65,17 +63,19 @@ function getSearchResults (req, res) {
 // This retrieves and returns data from the Google Books API. 
 function fetchBooks (req, res) {
   console.log(req.body);
-  const _books_URL = `https://www.googleapis.com/books/v1/volumes?q=${req.body.search[0]}`;
+  const _books_URL = `https://www.googleapis.com/books/v1/volumes?q=+in${req.body.search[1]}:${req.body.search[0]}`;
+  // console.log(_books_URL);
   return superagent.get(_books_URL)
     .then(results => {
-      //console.log(results);
-      console.log('got results from API');
-      if (results.items.length > 0) {
-        const formattedResults = results.items.map(result => {
-          //console.log(result.volumeInfo.title);
+      // console.log(results.body.items);
+      // console.log('got results from API');
+      if (results.body.items.length > 0) {
+        console.log('We got results YAY!');
+        const formattedResults = results.body.items.slice(0,10).map(result => {
+          console.log(result.volumeInfo.title);
           return new BookResult(result);
         });
-        console.table(formattedResults);
+        // console.table(formattedResults);
         return res.render('pages/searches/show', {books: formattedResults});
       } else {
         throw 'no results returned';
@@ -85,11 +85,12 @@ function fetchBooks (req, res) {
 }
 
 function BookResult (result) {
+  console.log(result);
   this.title = result.volumeInfo.title;
   this.authors = result.volumeInfo.authors;
-  this.isbn = result.industryIdentifiers.identifier;
-  this.img_url = result.imageLinks.thumbnail;
-  this.description = result.volumeInfo.description;
+  this.isbn = result.volumeInfo.industryIdentifiers.identifier|| 'no ISBN found';
+  this.img_url = result.volumeInfo.imageLinks.thumbnail || 'no image found';
+  this.description = result.volumeInfo.description || 'no DESCRIPTION found';
 }
 
 function handleError(err) {
