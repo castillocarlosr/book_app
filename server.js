@@ -88,7 +88,7 @@ function BookResult (result) {
   console.log(result);
   this.title = result.volumeInfo.title;
   this.authors = result.volumeInfo.authors;
-  this.isbn = result.volumeInfo.industryIdentifiers.identifier|| 'no ISBN found';
+  this.isbn = result.volumeInfo.industryIdentifiers|| 'no ISBN found';
   this.img_url = result.volumeInfo.imageLinks.thumbnail || 'no image found';
   this.description = result.volumeInfo.description || 'no DESCRIPTION found';
 }
