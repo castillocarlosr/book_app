@@ -12,20 +12,22 @@ require('dotenv').config();
 const PORT = process.env.PORT || 3000;
 const app = express();
 
-// const client = new pg.Client(process.env.DATABASE_URL);
-// client.connect();
-// client.on('err', err=> console.log(err));
+//connects to db
+const client = new pg.Client(process.env.DATABASE_URL);
+client.connect();
+client.on('err', err => console.log(err));
 
 app.use(cors());
 
 app.set('view engine', 'ejs');
 
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 // app.use(bodyParser.urlencoded({
 //   extended: true
 // }));
+
 
 //this is rendering the entire index page
 
@@ -35,7 +37,10 @@ app.get('/', (reg, res) => {
 
 app.post('/search', getSearchResults);
 
-function getSearchResults (req, res) {
+app.post('/shelf', getBookShelf);
+
+
+function getSearchResults(req, res) {
   // const sampleBooks = [{
   //   title: 'foundation',
   //   authors: ['Isac hazmat'],
@@ -61,26 +66,27 @@ function getSearchResults (req, res) {
 }
 
 // This retrieves and returns data from the Google Books API. 
-function fetchBooks (req, res) {
+function fetchBooks(req, res) {
   const _books_URL = `https://www.googleapis.com/books/v1/volumes?q=+in${req.body.search[1]}:${req.body.search[0]}`;
   return superagent.get(_books_URL)
     .then(results => {
       if (results.body.items.length > 0) {
-        const formattedResults = results.body.items.slice(0,10).map(result => {
+        const formattedResults = results.body.items.slice(0, 10).map(result => {
           return new BookResult(result);
         });
-        return res.render('pages/searches/show', {books: formattedResults});
+        return res.render('pages/searches/show', { books: formattedResults });
       } else {
         throw 'no results returned';
       }
     })
     .catch(err => handleError(err, res));
 
-   // .catch(err => handleError({errorMsg: err}, res));
+  // .catch(err => handleError({errorMsg: err}, res));
 
 }
 
-function BookResult (result) {
+
+function BookResult(result) {
   this.title = result.volumeInfo.title || '';
   this.authors = result.volumeInfo.authors || [];
   this.isbn = result.volumeInfo.industryIdentifiers || [];
@@ -90,14 +96,71 @@ function BookResult (result) {
 }
 
 function handleError(err, res) {
-
   //console.log(err);
   //res.redirect('/error');
 
   console.log('Oh oh error', err);
   const encodedError = JSON.stringify(err);
-  // res.render('pages/error')
-  res.redirect(`/err?e=${encodedError}`);
+  res.render('pages/error')
+  // res.redirect(`/err?e=${encodedError}`);
 }
 
-app.listen(PORT, ()=> console.log(`App is up on port ${PORT}`));
+
+// saveBooks();
+fetchBooksFromDB();
+
+
+function getBookShelf() {
+
+  //cach logic
+
+  //needs to call the query function
+  // saveBooks(req, res);
+  // fetchBooksFromDB(req, res);
+
+}
+
+function fetchBooksFromDB(req, res) {
+
+  //takes an object with search from path /shelf
+  // let query = req.body.shelf[0]//index will need to change with form layout
+  const SQL = 'SELECT * FROM savedBooks;'
+  // const values = [query];
+  //make 
+  return client.query(SQL).then(results => {
+    console.log(results.rows[0])})
+
+
+}
+
+//this function is called from getbookshelf, and saves books to book shelf
+function saveBooks() {
+
+
+  // let query = req.body.shelf//index will need to change with form layout
+  const query = ['jon', 'this is a book', '123stuff', 'url stuf', 'this is a book about stuff', 'dont know what goes here'];
+  const values =[];
+  const SQL = 'INSERT INTO savedBooks (author, title, isbn, image_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6);'
+  query.forEach(idx => {
+    values.push([idx])
+
+  });
+
+  client.query(SQL, values);
+  
+
+}
+
+
+//delete books from database
+function deleteBooks() {
+  // let query = req.body.shelf//index will need to change with form layout
+  const values = ['6'];
+  const SQL = 'DELETE FROM savedBooks WHERE id = $1;'
+
+
+  client.query(SQL, values);
+  console.log('deleted item')
+}
+
+app.listen(PORT, () => console.log(`App is up on port ${PORT}`));
