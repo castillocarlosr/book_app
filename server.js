@@ -81,7 +81,7 @@ function fetchBooks (req, res) {
         throw 'no results returned';
       }
     })
-    .catch(err => handleError(err));
+    .catch(err => handleError({errorMsg: err}, res));
 }
 
 function BookResult (result) {
@@ -93,8 +93,11 @@ function BookResult (result) {
   this.description = result.volumeInfo.description || 'no DESCRIPTION found';
 }
 
-function handleError(err) {
-  console.log(err);
+function handleError(err, res) {
+  console.log('Oh oh error', err);
+  const encodedError = JSON.stringify(err);
+  // res.render('pages/error')
+  res.redirect(`/err?e=${encodedError}`);
 }
 
 app.listen(PORT, ()=> console.log(`App is up on port ${PORT}`));
