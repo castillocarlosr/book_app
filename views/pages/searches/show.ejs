@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Book List</title>
-    <link rel="stylesheet" type="text/css" media="screen" href="../../public/reset.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../../public/base.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../../public/icons.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../../public/layout.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="../../public/modules.css"/>
-    <!-- <script src="main.js"></script> -->
-</head>
-<body>
-    <% books.forEach(book => { %>
-        <div class="bookcard">
-            <h4><%= book.title %></h4>
-            <h5><%= book.authors.join(', ') %></h5>
-            <h6><%= book.isbn %></h6>
-            <img class="bookimage" src="<%= book.img_url %>">
-            <p><%= book.description %></p>
-        </div>
-    <% }); %>
-</body>
+    <% let rootPath = '../../../'; %>
+    <%- include(rootPath + 'views/layout/head'); %>
+    <body>
+        <%- include(rootPath + 'views/layout/header'); %>
+        <main>
+            <% books.forEach(book => { %>
+                <div class="bookCard">
+                    <h4><%= book.title; %></h4>
+                    <h5><%= book.authors.join(', '); %></h5>
+                    <h6><%= book.isbn; %></h6>
+                    <img class="bookimage" src="<%= book.img_url; %>">
+                    <p><%= book.description; %></p>
+                </div>
+            <% }); %>
+        </main>
+    <%- include(rootPath + 'views/layout/footer'); %>
+    </body>
 </html>
+
+

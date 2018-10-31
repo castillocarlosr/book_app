@@ -1,14 +1,14 @@
+
 <!DOCTYPE html>
-
 <html>
-
-<head>
-</head>
-
-  <body>
-    <h1>ERROR</h1>
-    <h2>err</h2>
-
-  </body>
+    <% let rootPath = '../../'; %>
+    <%- include(rootPath + 'views/layout/head'); %>
+    <body>
+        <%- include(rootPath + 'views/layout/header'); %>
+        <main>
+            <h2>Something went wrong, and it's all your fault.</h2>
+        </main>
+        <%- include(rootPath + 'views/layout/footer'); %>
+    </body>
 
 </html>
