@@ -55,7 +55,9 @@ app.post('/search', fetchBooksAPI);
 app.post('/view', viewBookDetail);
 
 //override method
-app.put('/savebook', saveBooks)
+app.put('/savebook', saveBooks);
+
+app.put('/deletebook', deleteBooks);
 
 // This retrieves and returns data from the Google Books API. 
 function fetchBooksAPI(req, res) {
@@ -66,7 +68,7 @@ function fetchBooksAPI(req, res) {
         const formattedResults = results.body.items.slice(0, 10).map(result => {
           return new BookResult(result);
         });
-        return res.render('pages/searches/show', { books: formattedResults, resultsType: 'api' });
+        return res.render('pages/searches/show', { books: formattedResults});
       } else {
         throw 'no results returned';
       }
@@ -76,24 +78,16 @@ function fetchBooksAPI(req, res) {
   // .catch(err => handleError({errorMsg: err}, res));
 
 }
+
+//determines if there is an id on object
 function viewBookDetail(req, res){
   //gets object from front end
-  //parse object for book id or we could query based title
-  let id = req.body.something
-  const iDvalue = [id]
 
-  const SQL = 'SELECT $1 FROM savedBooks';
-  client.query(SQL, iDvalue);
-
-  return client.query(SQL)
-    .then(results => {
-      //this needs to be changes based on input from pickle rick
-      if(results.rows[0]) {
-        res.render('pages/index', {books: results.rows, resultsType: 'db'});
-      }
-    })
-    .catch(err => handleError(err, res));
-
+  console.log(reg.body);
+  if(req.body.id){
+    // let id = req.body.id;
+    console.log(req.body.id);
+  }
   
 }
 
@@ -111,7 +105,7 @@ function handleError(err, res) {
   //res.redirect('/error');
 
   console.log('Oh oh error', err);
-  const encodedError = JSON.stringify(err);
+  // const encodedError = JSON.stringify(err);
   res.render('pages/error')
   // res.redirect(`/err?e=${encodedError}`);
 }
@@ -151,7 +145,7 @@ function saveBooks(req, res) {
 
   const SQL = 'INSERT INTO savedBooks (author, title, isbn, image_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6);';
   client.query(SQL, values);
-  }
+}
 
 
 //delete books from database
