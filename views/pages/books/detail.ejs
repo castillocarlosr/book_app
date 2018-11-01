@@ -5,7 +5,24 @@
     <body>
         <%- include(rootPath + 'views/layout/header'); %>
         <main>
-            <%- include(rootPath + 'views/layout/bookCard', {books:books}); %>
+            <form class="saveForm" action="<%= action %>" method="post" _method="put">
+                <fieldset>
+                    <label>Title:<input type="text" name="title" value="<%= book.title %>"></label>
+                    <label>Authors:<input type="text" name="authors" value="<%= book.authors.join %>"></label>
+                    <label>ISBN:<input type="text" name="isbn" value="<%= book.isbn %>"></label>
+                    <label>Thumbnail URL:<input type="text" name="img_url" value="<%= book.img_url %>"></label>
+                    <label>Description:<input type="text" name="description" value="<%= book.description %>"></label>
+                    <label>Bookshelf notes:<input type="text" name="bookShelf" value=""></label>
+                    <% if (book.id) { %>
+                    <input class="hidden" type="text" name="id" value="<%=book.id%>">
+                    <% } %>
+                    <input type="submit" value="Save to My Books">
+                </fieldset>
+            </form>
+            <% if (book.id) { %>
+            <form class="delete" action="/delete" method="post" _method="put">
+                <input type="submit" value="Remove From My Books">
+            </form>
         </main>
         <%- include(rootPath + 'views/layout/footer'); %>
     </body>
