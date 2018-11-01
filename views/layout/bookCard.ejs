@@ -5,7 +5,7 @@
         <h6><%= book.isbn; %></h6>
         <img class="bookimage" src="<%= book.img_url; %>">
         <p><%= book.description; %></p>
-        <form class="saveForm" action="/saveToShelf" method="post">
+        <form class="saveForm" action="/saveBook" method="post">
             <fieldset>
                 <label>Title:<input type="text" name="title" default="<%= book.title %>"></label>
                 <label>Authors:<input type="text" name="authors" default="<%= book.authors.join %>"></label>
@@ -16,7 +16,7 @@
                 <input type="submit" value="Save to My Books">
             </fieldset>
         </form>
-        <form class="detailView" action="/detailView" method="get">
+        <form class="detailView" action="/viewBook" method="post">
             <fieldset>
                 <div class="hidden">
                     <label>Title:<input type="text" name="title" default="<%= book.title %>"></label>
