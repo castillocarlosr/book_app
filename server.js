@@ -16,7 +16,6 @@ require('dotenv').config();
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-
 app.use(methodoverride((req, res)=>{
   if(typeof (req.body)==='object' && '_method' in req.body ){
     let method = req.body._method;
@@ -85,7 +84,6 @@ function viewBookDetail(req, res){
 
   console.log(reg.body);
   if(req.body.id){
-    // let id = req.body.id;
     console.log(req.body.id);
   }
   
@@ -111,16 +109,6 @@ function handleError(err, res) {
 }
 
 
-// function getBookShelf() {
-
-//   //cach logic
-
-//   //needs to call the query function
-//   // saveBooks(req, res);git 
-//   // fetchBooksFromDB(req, res);
-
-// }
-
 
 
 function fetchBooksFromDB(req, res) {
@@ -128,7 +116,7 @@ function fetchBooksFromDB(req, res) {
   return client.query(SQL)
     .then(results => {
       if(results.rows[0]) {
-        res.render('pages/index', {books: results.rows, resultsType: 'db'});
+        res.render('pages/index', {books: results.rows});
       }
     })
     .catch(err => handleError(err, res));
@@ -141,7 +129,7 @@ function saveBooks(req, res) {
 
 // console.log(req.body)
 
-  const values =req.body.array;
+  //TODO: const values ==> array of form results
 
   const SQL = 'INSERT INTO savedBooks (author, title, isbn, image_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6);';
   client.query(SQL, values);

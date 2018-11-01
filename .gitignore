@@ -104,6 +104,12 @@ typings/
 # dotenv environment variables file
 .env
 
+# SSL database server keys
+.key
+.csr 
+.crt 
+
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
