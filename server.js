@@ -31,13 +31,18 @@ app.use(express.static('public'));
 
 //this is rendering the entire index page
 
-app.get('/', (reg, res) => {
-  res.render('pages/index');
+app.get('/', (req, res) => {
+  res.render('pages/index',{books: fetchBooksFromDB(req, res)});
 });
 
-app.post('/search', getSearchResults);
+app.post('/search', fetchBooks);
 
-app.post('/shelf', getBookShelf);
+app.post('/savebook', saveBooks);
+
+app.post('/view', viewBook);
+
+//from the form action should be shelf/<%=shelf.id%>
+app.post('/shelf', getBookShelf);//shelf should be /shel/:id
 
 
 function getSearchResults(req, res) {
@@ -56,7 +61,7 @@ function getSearchResults(req, res) {
   //   description: 'This book is for children!'
   // }];
   console.log('entered getSearchResults');
-  fetchBooks(req, res);
+  // fetchBooks(req, res);
 
   // if (bookResults) {
   //   res.render('pages/searches/show', {books: bookResults});
@@ -84,7 +89,10 @@ function fetchBooks(req, res) {
   // .catch(err => handleError({errorMsg: err}, res));
 
 }
-
+function viewBook(req, res){
+  console.log(req.body)
+  
+}
 
 function BookResult(result) {
   this.title = result.volumeInfo.title || '';
@@ -104,10 +112,6 @@ function handleError(err, res) {
   res.render('pages/error')
   // res.redirect(`/err?e=${encodedError}`);
 }
-
-
-// saveBooks();
-fetchBooksFromDB();
 
 
 function getBookShelf() {
@@ -134,11 +138,11 @@ function fetchBooksFromDB(req, res) {
 }
 
 //this function is called from getbookshelf, and saves books to book shelf
-function saveBooks() {
+function saveBooks(req, res) {
 
-
-  // let query = req.body.shelf//index will need to change with form layout
-  const query = ['jon', 'this is a book', '123stuff', 'url stuf', 'this is a book about stuff', 'dont know what goes here'];
+console.log(req.body)
+  let query = req.body.shelve
+  // const query = [];
   const values =[];
   const SQL = 'INSERT INTO savedBooks (author, title, isbn, image_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6);'
   query.forEach(idx => {
