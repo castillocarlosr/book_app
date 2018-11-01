@@ -1,5 +1,7 @@
 'use strict';
 
+
+//brings in modules
 const express = require('express');
 const cors = require('cors');
 const superagent = require('superagent');
@@ -7,11 +9,23 @@ const pg = require('pg');
 const ejs = require('ejs');
 const bodyParser = require('body-parser');
 
+const methodoverride = require('method-override');
+
 require('dotenv').config();
 
 const PORT = process.env.PORT || 3001;
 const app = express();
 
+
+app.use(methodoverride((req, res)=>{
+  if(typeof (req.body)==='object' && '_method' in req.body ){
+    let method = req.body._method;
+    delete req.body._method;
+    return method;
+  }
+}));
+
+//connects to db
 const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
 client.on('err', err => console.log(err));
@@ -30,29 +44,21 @@ app.use(express.static('public'));
 
 //this is rendering the entire index page
 
-app.get('/', (req, res) => {
-  res.render('pages/index',{books: fetchBooksFromDB(req, res)});
-});
 
-app.post('/search', fetchBooks);
+//connections to fron end
+app.get('/', fetchBooksFromDB);
 
-app.post('/savebook', saveBooks);
+app.post('/search', fetchBooksAPI);
 
-app.post('/view', viewBook);
+// app.post('/savebook', saveBooks);
 
-//from the form action should be shelf/<%=shelf.id%>
-app.post('/shelf', getBookShelf);//shelf should be /shel/:id
+app.post('/view', viewBookDetail);
 
-
-function getSearchResults(req, res) {
-  
-  console.log('entered getSearchResults');
-  // fetchBooks(req, res);
-
-}
+//override method
+app.put('/savebook', saveBooks)
 
 // This retrieves and returns data from the Google Books API. 
-function fetchBooks(req, res) {
+function fetchBooksAPI(req, res) {
   const _books_URL = `https://www.googleapis.com/books/v1/volumes?q=+in${req.body.search[1]}:${req.body.search[0]}`;
   return superagent.get(_books_URL)
     .then(results => {
@@ -60,7 +66,7 @@ function fetchBooks(req, res) {
         const formattedResults = results.body.items.slice(0, 10).map(result => {
           return new BookResult(result);
         });
-        return res.render('pages/searches/show', { books: formattedResults });
+        return res.render('pages/searches/show', { books: formattedResults, resultsType: 'api' });
       } else {
         throw 'no results returned';
       }
@@ -70,8 +76,24 @@ function fetchBooks(req, res) {
   // .catch(err => handleError({errorMsg: err}, res));
 
 }
-function viewBook(req, res){
-  console.log(req.body)
+function viewBookDetail(req, res){
+  //gets object from front end
+  //parse object for book id or we could query based title
+  let id = req.body.something
+  const iDvalue = [id]
+
+  const SQL = 'SELECT $1 FROM savedBooks';
+  client.query(SQL, iDvalue);
+
+  return client.query(SQL)
+    .then(results => {
+      //this needs to be changes based on input from pickle rick
+      if(results.rows[0]) {
+        res.render('pages/index', {books: results.rows, resultsType: 'db'});
+      }
+    })
+    .catch(err => handleError(err, res));
+
   
 }
 
@@ -95,21 +117,25 @@ function handleError(err, res) {
 }
 
 
-function getBookShelf() {
+// function getBookShelf() {
 
-  //cach logic
+//   //cach logic
 
-  //needs to call the query function
-  // saveBooks(req, res);
-  // fetchBooksFromDB(req, res);
+//   //needs to call the query function
+//   // saveBooks(req, res);git 
+//   // fetchBooksFromDB(req, res);
 
-}
+// }
+
+
 
 function fetchBooksFromDB(req, res) {
   const SQL = 'SELECT * FROM savedBooks';
   return client.query(SQL)
     .then(results => {
-      console.log(results.rows[0]);
+      if(results.rows[0]) {
+        res.render('pages/index', {books: results.rows, resultsType: 'db'});
+      }
     })
     .catch(err => handleError(err, res));
 
@@ -117,23 +143,21 @@ function fetchBooksFromDB(req, res) {
 
 //this function is called from getbookshelf, and saves books to book shelf
 function saveBooks(req, res) {
+//takes in obj, we will parse for sql values
 
-console.log(req.body)
-  let query = req.body.shelve
-  // const query = [];
-  const values =[];
+// console.log(req.body)
 
-  const SQL = 'INSERT INTO savedBooks (author, title, isbn, image_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6);'
-  //client.query(SQL, sampleValues);
-  
+  const values =req.body.array;
 
-}
+  const SQL = 'INSERT INTO savedBooks (author, title, isbn, image_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6);';
+  client.query(SQL, values);
+  }
 
 
 //delete books from database
 function deleteBooks() {
   // let query = req.body.shelf//index will need to change with form layout
-  const values = ['6'];
+  const values = ['7'];
   const SQL = 'DELETE FROM savedBooks WHERE id = $1;'
 
 

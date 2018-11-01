@@ -1,8 +1,10 @@
-<% books.forEach(book => { %>
+<% console.log(books); %>
+<% books.forEach(book => { %>rs
     <div class="bookCard">
         <h4><%= book.title; %></h4>
         <h5><%= book.authors; %></h5>
         <!-- <h6><%= book.isbn; %></h6> -->
+
         <img class="bookimage" src="<%= book.img_url; %>">
         <!-- <p><%= book.description; %></p> -->
         
@@ -17,6 +19,7 @@
                 <% if (book.id) { %>
                 <input class="hidden" type="text" name="id" value="<%= book.id %>">
                 <% } %>
+
             </fieldset>
             <input type="submit" value="Detail View">
         </form>
