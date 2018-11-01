@@ -5,10 +5,10 @@
     <body>
         <%- include(rootPath + 'views/layout/header'); %>
         <main>
-            <form class="saveForm" action="<%= action %>" method="post" _method="put">
+            <form class="saveForm" action="<%= action %>" method="post" _method="<%= method %>">
                 <fieldset>
                     <label>Title:<input type="text" name="title" value="<%= book.title %>"></label>
-                    <label>Authors:<input type="text" name="authors" value="<%= book.authors.join %>"></label>
+                    <label>Authors:<input type="text" name="authors" value="<%= book.authors %>"></label>
                     <label>ISBN:<input type="text" name="isbn" value="<%= book.isbn %>"></label>
                     <label>Thumbnail URL:<input type="text" name="img_url" value="<%= book.img_url %>"></label>
                     <label>Description:<input type="text" name="description" value="<%= book.description %>"></label>
