@@ -9,10 +9,9 @@ const bodyParser = require('body-parser');
 
 require('dotenv').config();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const app = express();
 
-//connects to db
 const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
 client.on('err', err => console.log(err));
@@ -46,28 +45,10 @@ app.post('/shelf', getBookShelf);//shelf should be /shel/:id
 
 
 function getSearchResults(req, res) {
-  // const sampleBooks = [{
-  //   title: 'foundation',
-  //   authors: ['Isac hazmat'],
-  //   isbn: '123-abcd',
-  //   img_url: 'https://images-na.ssl-images-amazon.com/images/I/811zq%2B9%2BhNL.jpg',
-  //   description: 'This book sucks!'
-  // },
-  // {
-  //   title: 'lort',
-  //   authors: ['grlort'],
-  //   isbn: '666-nice',
-  //   img_url: 'https://images-na.ssl-images-amazon.com/images/I/811zq%2B9%2BhNL.jpg',
-  //   description: 'This book is for children!'
-  // }];
+  
   console.log('entered getSearchResults');
   // fetchBooks(req, res);
 
-  // if (bookResults) {
-  //   res.render('pages/searches/show', {books: bookResults});
-  // } else {
-  //   res.render('pages/searches/error');
-  // }
 }
 
 // This retrieves and returns data from the Google Books API. 
@@ -125,15 +106,12 @@ function getBookShelf() {
 }
 
 function fetchBooksFromDB(req, res) {
-
-  //takes an object with search from path /shelf
-  // let query = req.body.shelf[0]//index will need to change with form layout
-  const SQL = 'SELECT * FROM savedBooks;'
-  // const values = [query];
-  //make 
-  return client.query(SQL).then(results => {
-    console.log(results.rows[0])})
-
+  const SQL = 'SELECT * FROM savedBooks';
+  return client.query(SQL)
+    .then(results => {
+      console.log(results.rows[0]);
+    })
+    .catch(err => handleError(err, res));
 
 }
 
@@ -144,13 +122,9 @@ console.log(req.body)
   let query = req.body.shelve
   // const query = [];
   const values =[];
+
   const SQL = 'INSERT INTO savedBooks (author, title, isbn, image_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6);'
-  query.forEach(idx => {
-    values.push([idx])
-
-  });
-
-  client.query(SQL, values);
+  //client.query(SQL, sampleValues);
   
 
 }
