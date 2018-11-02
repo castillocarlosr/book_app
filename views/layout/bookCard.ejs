@@ -3,13 +3,14 @@
     <div class="bookCard">
         <h4><%= book.title; %></h4>
         <h5><%= book.authors; %></h5>
+        <% console.log(book.authors); %>
         <!-- <h6><%= book.isbn; %></h6> -->
 
         <img class="bookimage" src="<%= book.img_url; %>">
         <!-- <p><%= book.description; %></p> -->
         
         <form action="/view" method="post">
-            <fieldset>
+            <fieldset class="hidden">
                 <label>Title:<input type="text" name="title" value="<%= book.title %>"></label>
                 <label>Authors:<input type="text" name="authors" value="<%= book.authors %>"></label>
                 <label>ISBN:<input type="text" name="isbn" value="<%= book.isbn %>"></label>
@@ -19,7 +20,6 @@
                 <% if (book.id) { %>
                 <input class="hidden" type="text" name="id" value="<%= book.id %>">
                 <% } %>
-
             </fieldset>
             <input type="submit" value="Detail View">
         </form>

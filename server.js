@@ -55,7 +55,7 @@ app.post('/delete', deleteBook);
 
 // This retrieves and returns data from the Google Books API.
 function fetchBooksAPI(req, res) {
-  const _books_URL = `https://www.googleapis.com/books/v1/volumes?q=+in${req.body.search[1]}:${req.body.search[0]}`;
+  const _books_URL = `https://www.googleapis.com/books/v1/volumes?q=+in${req.body.search[1]}:${req.body.search[0].replace(/\s/, '+')}`;
   return superagent.get(_books_URL)
     .then(results => {
       if (results.body.items.length > 0) {
@@ -96,7 +96,7 @@ function viewBookDetail(req, res){
 
 
 function fetchBooksFromDB(req, res) {
-  const SQL = 'SELECT * FROM savedBooks';
+  const SQL = 'SELECT * FROM savedbooks';
   return client.query(SQL)
     .then(results => {
       if(results.rows[0]) {
@@ -114,7 +114,7 @@ function fetchBooksFromDB(req, res) {
 //this function is called from getbookshelf, and saves books to book shelf
 function saveBook(req, res) {
   const values =[req.body.authors, req.body.title, req.body.isbn, req.body.img_url, req.body.description1, req.body.bookshelf];
-  const SQL = 'INSERT INTO savedBooks (authors, title, isbn, img_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6);';
+  const SQL = 'INSERT INTO savedbooks (authors, title, isbn, img_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6);';
   client.query(SQL, values);
   res.render('pages/books/detail', {book: req.body});
 }
@@ -122,7 +122,7 @@ function saveBook(req, res) {
 
 function updateBook(req, res){
   const updateArr=[req.body.authors, req.body.title, req.body.isbn, req.body.img_url, req.body.description1, req.body.bookshelf, req.body.id];
-  let updateSQL ='UPDATE savedBooks SET authors=$1, title=$2, isbn=$3, img_url=$4, description1=$5, bookshelf=$6 WHERE id=$7'
+  let updateSQL ='UPDATE savedbooks SET authors=$1, title=$2, isbn=$3, img_url=$4, description1=$5, bookshelf=$6 WHERE id=$7'
   client.query(updateSQL, updateArr);
   console.log('saved to database!');
   res.render('pages/books/detail', {book: req.body});
@@ -132,7 +132,7 @@ function updateBook(req, res){
 function deleteBook(req, res) {
   console.log(req.body.id)
   const values = [req.body.id];
-  const SQL = 'DELETE FROM savedBooks WHERE id = $1;'
+  const SQL = 'DELETE FROM savedbooks WHERE id = $1;'
   client.query(SQL, values);
   console.log('deleted item');
   res.redirect('/');
@@ -147,7 +147,7 @@ function handleError(err, res) {
 function BookResult(result) {
   this.title = result.volumeInfo.title || '';
   this.authors = result.volumeInfo.authors || [];
-  this.isbn = result.volumeInfo.industryIdentifiers || [];
+  this.isbn = result.volumeInfo.industryIdentifiers[0].identifier || [];
   this.img_url = result.volumeInfo.imageLinks.thumbnail || '';
   this.description1 = result.volumeInfo.description1 || '';
 }
