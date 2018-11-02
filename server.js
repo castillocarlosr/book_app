@@ -16,17 +16,6 @@ require('dotenv').config();
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-<<<<<<< HEAD
-app.use(methodoverride((req, res)=>{
-  if(typeof (req.body)==='object' && '_method' in req.body ){
-    let method = req.body._method;
-    delete req.body._method;
-    return method;
-  }
-}));
-=======
-
->>>>>>> ae4cc65b924aa430183a13946649b036fbca1fde
 
 // pg middleware setup
 const client = new pg.Client(process.env.DATABASE_URL);
@@ -84,13 +73,6 @@ function fetchBooksAPI(req, res) {
 
 //determines if there is an id on object
 function viewBookDetail(req, res){
-<<<<<<< HEAD
-  //gets object from front end
-
-  console.log(reg.body);
-  if(req.body.id){
-    console.log(req.body.id);
-=======
   let booky;
   if(req.body){
     booky = {
@@ -98,7 +80,7 @@ function viewBookDetail(req, res){
       authors: req.body.authors,
       isbn: req.body.isbn,
       img_url: req.body.img_url,
-      description: req.body.description,
+      description1: req.body.description1,
       bookshelf: req.body.bookShelf
     };
   } else {
@@ -106,7 +88,6 @@ function viewBookDetail(req, res){
   }
   if (req.body.id) {
     booky.id = req.body.id;
->>>>>>> ae4cc65b924aa430183a13946649b036fbca1fde
   }
 
   res.render('pages/books/detail', {book: booky});
@@ -114,11 +95,6 @@ function viewBookDetail(req, res){
 }
 
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> ae4cc65b924aa430183a13946649b036fbca1fde
 function fetchBooksFromDB(req, res) {
   const SQL = 'SELECT * FROM savedBooks';
   return client.query(SQL)
@@ -131,20 +107,9 @@ function fetchBooksFromDB(req, res) {
 }
 
 //this function is called from getbookshelf, and saves books to book shelf
-<<<<<<< HEAD
-function saveBooks(req, res) {
-//takes in obj, we will parse for sql values
-
-// console.log(req.body)
-
-  //TODO: const values ==> array of form results
-
-  const SQL = 'INSERT INTO savedBooks (author, title, isbn, image_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6);';
-=======
 function saveBook(req, res) {
   const values =[req.body.author, req.body.title, req.body.isbn, req.body.img_url, req.body.description, req.body.bookshelf];
-  const SQL = 'INSERT INTO savedBooks (author, title, isbn, img_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6);';
->>>>>>> ae4cc65b924aa430183a13946649b036fbca1fde
+  const SQL = 'INSERT INTO savedBooks (authors, title, isbn, img_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6);';
   client.query(SQL, values);
   res.redirect('/');
 }
@@ -152,7 +117,7 @@ function saveBook(req, res) {
 
 function updateBook(req, res){
   const updateArr=[req.body.authors, req.body.title, req.body.isbn, req.body.img_url, req.body.description, req.body.bookshelf, req.body.id];
-  let updateSQL ='UPDATE savedBooks SET author=$1, title=$2, isbn=$3, img_url=$4, description1=$5, bookshelf=$6 WHERE id=$7'
+  let updateSQL ='UPDATE savedBooks SET authors=$1, title=$2, isbn=$3, img_url=$4, description1=$5, bookshelf=$6 WHERE id=$7'
   client.query(updateSQL, updateArr);
   console.log('saved to database!');
   res.redirect('/');
@@ -178,7 +143,7 @@ function BookResult(result) {
   this.authors = result.volumeInfo.authors || [];
   this.isbn = result.volumeInfo.industryIdentifiers || [];
   this.img_url = result.volumeInfo.imageLinks.thumbnail || '';
-  this.description = result.volumeInfo.description || '';
+  this.description1 = result.volumeInfo.description1 || '';
 }
 
 app.listen(PORT, () => console.log(`App is up on port ${PORT}`));
