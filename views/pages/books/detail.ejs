@@ -5,7 +5,18 @@
     <body>
         <%- include(rootPath + 'views/layout/header'); %>
         <main>
-            <form class="saveForm" action="<%= action %>" method="post" _method="<%= method %>">
+            <% console.log(book); %>
+            <% var action; %>
+            <% if (book.id) { %>
+            <%      action = '/update'; %>
+            <% } else { %>
+            <%      action = '/save'; %>
+            <% } %> 
+            <% console.log(action); %>
+            <form class="saveForm" action="<%=action%>" method="post">
+                <% if (book.id) { %>
+                    <!-- <input type="hidden" name="_method" value="put"> -->
+                <% } %>
                 <fieldset>
                     <label>Title:<input type="text" name="title" value="<%= book.title %>"></label>
                     <label>Authors:<input type="text" name="authors" value="<%= book.authors %>"></label>

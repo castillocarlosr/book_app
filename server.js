@@ -17,6 +17,20 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 
 
+
+// pg middleware setup
+const client = new pg.Client(process.env.DATABASE_URL);
+client.connect();
+client.on('err', err => console.log(err));
+
+// Express setup
+app.use(cors());
+
+app.set('view engine', 'ejs');
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
+
 app.use(methodoverride((req, res)=>{
   if(typeof (req.body)==='object' && '_method' in req.body ){
     let method = req.body._method;
@@ -25,41 +39,22 @@ app.use(methodoverride((req, res)=>{
   }
 }));
 
-//connects to db
-const client = new pg.Client(process.env.DATABASE_URL);
-client.connect();
-client.on('err', err => console.log(err));
 
-app.use(cors());
-
-app.set('view engine', 'ejs');
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
-
-// app.use(bodyParser.urlencoded({
-//   extended: true
-// }));
-
-
-//this is rendering the entire index page
-
-
-//connections to fron end
+//middleware connections to front end
 app.get('/', fetchBooksFromDB);
 
 app.post('/search', fetchBooksAPI);
 
-// app.post('/savebook', saveBooks);
+
 
 app.post('/view', viewBookDetail);
+app.post('/update', updateBook)
 
-//override method
-app.put('/savebook', saveBooks);
+app.post('/save', saveBook);
 
-app.put('/deletebook', deleteBooks);
+app.put('/deletebook', deleteBook);
 
-// This retrieves and returns data from the Google Books API. 
+// This retrieves and returns data from the Google Books API.
 function fetchBooksAPI(req, res) {
   const _books_URL = `https://www.googleapis.com/books/v1/volumes?q=+in${req.body.search[1]}:${req.body.search[0]}`;
   return superagent.get(_books_URL)
@@ -75,20 +70,73 @@ function fetchBooksAPI(req, res) {
     })
     .catch(err => handleError(err, res));
 
-  // .catch(err => handleError({errorMsg: err}, res));
-
 }
 
 //determines if there is an id on object
 function viewBookDetail(req, res){
-  //gets object from front end
-
-  console.log(reg.body);
-  if(req.body.id){
-    // let id = req.body.id;
-    console.log(req.body.id);
+  let booky;
+  if(req.body){
+    booky = {
+      title: req.body.title,
+      authors: req.body.authors,
+      isbn: req.body.isbn,
+      img_url: req.body.img_url,
+      description: req.body.description,
+      bookshelf: req.body.bookShelf
+    };
+  } else {
+    console.log('our form is fucked');
   }
-  
+  if (req.body.id) {
+    booky.id = req.body.id;
+  }
+
+  res.render('pages/books/detail', {book: booky});
+
+}
+
+
+function fetchBooksFromDB(req, res) {
+  const SQL = 'SELECT * FROM savedBooks';
+  return client.query(SQL)
+    .then(results => {
+      if(results.rows[0]) {
+        res.render('pages/index', {books: results.rows});
+      }
+    })
+    .catch(err => handleError(err, res));
+}
+
+//this function is called from getbookshelf, and saves books to book shelf
+function saveBook(req, res) {
+  const values =[req.body.author, req.body.title, req.body.isbn, req.body.img_url, req.body.description, req.body.bookshelf];
+  const SQL = 'INSERT INTO savedBooks (author, title, isbn, img_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6);';
+  client.query(SQL, values);
+  res.redirect('/');
+}
+
+
+function updateBook(req, res){
+  const updateArr=[req.body.authors, req.body.title, req.body.isbn, req.body.img_url, req.body.description, req.body.bookshelf, req.body.id];
+  let updateSQL ='UPDATE savedBooks SET author=$1, title=$2, isbn=$3, img_url=$4, description1=$5, bookshelf=$6 WHERE id=$7'
+  client.query(updateSQL, updateArr);
+  console.log('saved to database!');
+  res.redirect('/');
+}
+
+//delete books from database
+function deleteBook(req, res) {
+  const values = [req.body.id];
+  const SQL = 'DELETE FROM savedBooks WHERE id = $1;'
+  client.query(SQL, values);
+  console.log('deleted item');
+  res.redirect('/');
+}
+
+
+function handleError(err, res) {
+  console.log('Oh oh error', err);
+  res.render('pages/error');
 }
 
 function BookResult(result) {
@@ -97,66 +145,6 @@ function BookResult(result) {
   this.isbn = result.volumeInfo.industryIdentifiers || [];
   this.img_url = result.volumeInfo.imageLinks.thumbnail || '';
   this.description = result.volumeInfo.description || '';
-
-}
-
-function handleError(err, res) {
-  //console.log(err);
-  //res.redirect('/error');
-
-  console.log('Oh oh error', err);
-  // const encodedError = JSON.stringify(err);
-  res.render('pages/error')
-  // res.redirect(`/err?e=${encodedError}`);
-}
-
-
-// function getBookShelf() {
-
-//   //cach logic
-
-//   //needs to call the query function
-//   // saveBooks(req, res);git 
-//   // fetchBooksFromDB(req, res);
-
-// }
-
-
-
-function fetchBooksFromDB(req, res) {
-  const SQL = 'SELECT * FROM savedBooks';
-  return client.query(SQL)
-    .then(results => {
-      if(results.rows[0]) {
-        res.render('pages/index', {books: results.rows, resultsType: 'db'});
-      }
-    })
-    .catch(err => handleError(err, res));
-
-}
-
-//this function is called from getbookshelf, and saves books to book shelf
-function saveBooks(req, res) {
-//takes in obj, we will parse for sql values
-
-// console.log(req.body)
-
-  const values =req.body.array;
-
-  const SQL = 'INSERT INTO savedBooks (author, title, isbn, image_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6);';
-  client.query(SQL, values);
-}
-
-
-//delete books from database
-function deleteBooks() {
-  // let query = req.body.shelf//index will need to change with form layout
-  const values = ['7'];
-  const SQL = 'DELETE FROM savedBooks WHERE id = $1;'
-
-
-  client.query(SQL, values);
-  console.log('deleted item')
 }
 
 app.listen(PORT, () => console.log(`App is up on port ${PORT}`));
