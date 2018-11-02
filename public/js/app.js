@@ -1,3 +1,8 @@
 'use strict';
 
-$('.toggle').on('click', () => $('.edit').toggle());
+$(".toggleButton").click(() => {
+    $(".toggle").toggle();
+});
+
+
+

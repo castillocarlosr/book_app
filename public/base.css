@@ -5,6 +5,7 @@ body, main {
 
 body{
     background-color:#76d04b;
+    height: 100%;
     position: relative;
     width: 100%;
 }
@@ -18,21 +19,22 @@ header, footer {
 
 main {
     background-color: lightgrey;
-    height: 800px;
     margin: 0 auto 0 auto;
+    min-height: 100%;
     text-align: center;
     width: 480px;
 }
 
 .bookCard {
     background-color: rgb(49, 49, 49);
+    border-radius: .2em;
+    box-shadow: .05em .5em .2em rgb(87, 87, 87);
     color: rgb(230, 228, 228);
     margin: 1em auto 0 auto;
     width: 100%;
 }
 
 footer {
-    position: fixed;
     bottom: 0;
     padding-top: 1px;
 }
@@ -42,4 +44,22 @@ footer h2 {
 
 .hidden {
     display: none;
+}
+
+input {
+    display: block;
+    margin: .2em auto;
+}
+
+.search {
+    background-color: rgb(87, 87, 87);
+    border-radius: .1em;
+    color: rgb(230, 228, 228);
+}
+
+.search input:checked {
+    background-color: rgb(255, 158, 11);
+    border-radius: .5em;
+    color: white;
+    text-shadow: .05em .05em .01em rgb(87, 87, 87);
 }

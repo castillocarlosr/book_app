@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS savedBooks;
+DROP TABLE IF EXISTS savedbooks;
 
-CREATE TABLE savedBooks(
+CREATE TABLE savedbooks(
     id SERIAL PRIMARY KEY,
     authors VARCHAR(255),
     title VARCHAR(255),
