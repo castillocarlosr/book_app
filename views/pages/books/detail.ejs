@@ -31,7 +31,8 @@
                 <input type="submit" value="Save to My Books">
             </form>
             <% if (book.id) { %>
-            <form class="delete" action="/delete" method="post" _method="put">
+            <form class="delete" action="/delete" method="post">
+                <input class="hidden" name="id" type="text" value="<%=book.id%>">
                 <input type="submit" value="Remove From My Books">
             </form>
             <% } %>
