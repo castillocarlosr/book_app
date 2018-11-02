@@ -6,7 +6,8 @@
         <%- include(rootPath + 'views/layout/header'); %>
         <main>
             <%- include(rootPath + 'views/layout/searchForm'); %>
-            <% if(books) { %>
+            <% if(typeof books!='undefined') { %>
+                <% console.log('inside the if block on index')%>
                 <%- include(rootPath + 'views/layout/bookCard', {books:books}); %>
             <% } %>
         </main>

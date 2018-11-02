@@ -47,11 +47,11 @@ app.post('/search', fetchBooksAPI);
 
 
 app.post('/view', viewBookDetail);
-app.post('/update', updateBook)
+app.post('/update', updateBook) 
 
 app.post('/save', saveBook);
 
-app.put('/deletebook', deleteBook);
+app.post('/delete', deleteBook);
 
 // This retrieves and returns data from the Google Books API.
 function fetchBooksAPI(req, res) {
@@ -101,6 +101,11 @@ function fetchBooksFromDB(req, res) {
     .then(results => {
       if(results.rows[0]) {
         res.render('pages/index', {books: results.rows});
+        console.log('gots the results from database');
+      }
+      else{
+        console.log('no results from database');
+        res.render('pages/index');
       }
     })
     .catch(err => handleError(err, res));
@@ -108,23 +113,24 @@ function fetchBooksFromDB(req, res) {
 
 //this function is called from getbookshelf, and saves books to book shelf
 function saveBook(req, res) {
-  const values =[req.body.author, req.body.title, req.body.isbn, req.body.img_url, req.body.description, req.body.bookshelf];
+  const values =[req.body.authors, req.body.title, req.body.isbn, req.body.img_url, req.body.description1, req.body.bookshelf];
   const SQL = 'INSERT INTO savedBooks (authors, title, isbn, img_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6);';
   client.query(SQL, values);
-  res.redirect('/');
+  res.render('pages/books/detail', {book: req.body});
 }
 
 
 function updateBook(req, res){
-  const updateArr=[req.body.authors, req.body.title, req.body.isbn, req.body.img_url, req.body.description, req.body.bookshelf, req.body.id];
+  const updateArr=[req.body.authors, req.body.title, req.body.isbn, req.body.img_url, req.body.description1, req.body.bookshelf, req.body.id];
   let updateSQL ='UPDATE savedBooks SET authors=$1, title=$2, isbn=$3, img_url=$4, description1=$5, bookshelf=$6 WHERE id=$7'
   client.query(updateSQL, updateArr);
   console.log('saved to database!');
-  res.redirect('/');
+  res.render('pages/books/detail', {book: req.body});
 }
 
 //delete books from database
 function deleteBook(req, res) {
+  console.log(req.body.id)
   const values = [req.body.id];
   const SQL = 'DELETE FROM savedBooks WHERE id = $1;'
   client.query(SQL, values);
