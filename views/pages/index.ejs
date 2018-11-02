@@ -19,9 +19,7 @@
                 </fieldset>
                 <button type="submit">Search the google books API</button>
             </form>
-            <% if (books) {
-                <%- include(rootPath + 'views/layout/bookCard', {books:books, resultsType:resultsType}); %>
-            <% } >
+            <%- include(rootPath + 'views/layout/bookCard', {books:books}); %>
         </main>
         <%- include(rootPath + 'views/layout/footer'); %>
     </body>

@@ -17,5 +17,5 @@ SELECT * FROM savedBooks WHERE author = $1;
 
 SELECT * FROM savedBooks WHERE title = $1;
 
-INSERT INTO savedBooks (id, author, title, isbn, image_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6, $7);
 
+INSERT INTO savedBooks (id, author, title, isbn, image_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6,$7);
