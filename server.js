@@ -17,7 +17,6 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 
 
-
 // pg middleware setup
 const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
@@ -81,7 +80,7 @@ function viewBookDetail(req, res){
       authors: req.body.authors,
       isbn: req.body.isbn,
       img_url: req.body.img_url,
-      description: req.body.description,
+      description1: req.body.description1,
       bookshelf: req.body.bookShelf
     };
   } else {
@@ -110,7 +109,7 @@ function fetchBooksFromDB(req, res) {
 //this function is called from getbookshelf, and saves books to book shelf
 function saveBook(req, res) {
   const values =[req.body.author, req.body.title, req.body.isbn, req.body.img_url, req.body.description, req.body.bookshelf];
-  const SQL = 'INSERT INTO savedBooks (author, title, isbn, img_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6);';
+  const SQL = 'INSERT INTO savedBooks (authors, title, isbn, img_url, description1, bookshelf) VALUES($1, $2, $3, $4, $5, $6);';
   client.query(SQL, values);
   res.redirect('/');
 }
@@ -118,7 +117,7 @@ function saveBook(req, res) {
 
 function updateBook(req, res){
   const updateArr=[req.body.authors, req.body.title, req.body.isbn, req.body.img_url, req.body.description, req.body.bookshelf, req.body.id];
-  let updateSQL ='UPDATE savedBooks SET author=$1, title=$2, isbn=$3, img_url=$4, description1=$5, bookshelf=$6 WHERE id=$7'
+  let updateSQL ='UPDATE savedBooks SET authors=$1, title=$2, isbn=$3, img_url=$4, description1=$5, bookshelf=$6 WHERE id=$7'
   client.query(updateSQL, updateArr);
   console.log('saved to database!');
   res.redirect('/');
@@ -144,7 +143,7 @@ function BookResult(result) {
   this.authors = result.volumeInfo.authors || [];
   this.isbn = result.volumeInfo.industryIdentifiers || [];
   this.img_url = result.volumeInfo.imageLinks.thumbnail || '';
-  this.description = result.volumeInfo.description || '';
+  this.description1 = result.volumeInfo.description1 || '';
 }
 
 app.listen(PORT, () => console.log(`App is up on port ${PORT}`));
