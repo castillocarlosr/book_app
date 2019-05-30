@@ -1,6 +1,4 @@
-# book_app
-Carlos, Jon, Rick
-# Project Name
+# Project Name: book_app
 
 **Author**: Carlos, Jon, Rick
 **Version**: 1.0.0 (increment the patch/fix version number if you make more commits past your first submission)
@@ -76,7 +74,7 @@ Estimate of time needed to complete: 30 minutes
 
 Start time: 1100
 
-Finish time: not finished
+Finish time: Another repository.
 
 Actual time needed to complete: 2:30
 
